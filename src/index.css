@@ -1,0 +1,49 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+:root {
+    --primary-color: #cc0000;
+    --text-color: #0f0f0f;
+    --bg-light: #f9f9f9;
+    --bg-dark: #0f0f0f;
+    --hover-color: #e5e5e5;
+    --subscribed-color: #606060;
+}
+
+a{
+    text-decoration: none;
+    color: #5a5a5a;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--text-color);
+}
+
+img{
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+img:hover {
+    transform: scale(1.05);
+}
+
+.flex-div{
+    display: flex;
+    align-items: center;
+}
+
+/* Animation for page transitions */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.play-video, .publisher, .vid-description, .comment {
+    animation: fadeIn 0.5s ease-out;
+}
