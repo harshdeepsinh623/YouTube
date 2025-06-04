@@ -86,3 +86,10 @@
     padding-bottom: 2px;
     border-bottom: 3px solid red;
 }
+
+/* Add this at the end of your Sidebar.css file */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+}

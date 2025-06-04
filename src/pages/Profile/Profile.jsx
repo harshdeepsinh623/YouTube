@@ -45,7 +45,6 @@ const Profile = () => {
             className="profile-avatar"
           />
           <div className="profile-details">
-            <h2>{currentUser.displayName || 'YouTube User'}</h2>
             <p>{currentUser.email}</p>
             <p>{subscriptions.length} Subscriptions</p>
             <p>{likedVideos.length} Liked Videos</p>

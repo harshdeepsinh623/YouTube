@@ -10,6 +10,7 @@ import jack from '../../assets/jack.png'
 import user_profile from '../../assets/user_profile.jpg'
 import { API_KEY, value_converter } from '../../data'
 import moment from 'moment'
+import { useAuth } from '../../contexts/AuthContext'
 
 const PlayVideo = ({videoId}) => {
     const navigate = useNavigate();
@@ -17,16 +18,85 @@ const PlayVideo = ({videoId}) => {
     const [channelData, setChannelData] = useState(null);
     const [commentsData, setCommentsData] = useState([]);
     const [isLiked, setIsLiked] = useState(false);
+    const [isDisliked, setIsDisliked] = useState(false); // Add this state for dislike button
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
-
+    const { currentUser } = useAuth(); // Add this to get current user
+    const [showChannelInfo, setShowChannelInfo] = useState(true);
+    
     const handleLike = () => {
-        if (isLiked) {
-            setLikeCount(prev => prev - 1);
-        } else {
-            setLikeCount(prev => prev + 1);
+        if (!currentUser) {
+            // Show notification to sign in
+            const notification = document.createElement('div');
+            notification.className = 'subscription-notification';
+            notification.textContent = 'Please sign in to like videos';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+            return;
         }
-        setIsLiked(!isLiked);
+
+        if (isDisliked) {
+            setIsDisliked(false);
+        }
+
+        const newLikedState = !isLiked;
+        setIsLiked(newLikedState);
+        
+        if (newLikedState) {
+            setLikeCount(prev => prev + 1);
+            // Save to liked videos in localStorage
+            const likedVideos = JSON.parse(localStorage.getItem(`likedVideos_${currentUser.uid}`) || '[]');
+            
+            // Check if video is already in liked videos
+            if (!likedVideos.some(video => video.id === videoId)) {
+                const newLikedVideo = {
+                    id: videoId,
+                    title: apiData?.snippet?.title,
+                    thumbnail: apiData?.snippet?.thumbnails?.medium?.url,
+                    channelTitle: apiData?.snippet?.channelTitle,
+                    categoryId: apiData?.snippet?.categoryId || '0'
+                };
+                likedVideos.push(newLikedVideo);
+                localStorage.setItem(`likedVideos_${currentUser.uid}`, JSON.stringify(likedVideos));
+                
+                // Show notification
+                const notification = document.createElement('div');
+                notification.className = 'subscription-notification';
+                notification.textContent = 'Video added to liked videos';
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }
+        } else {
+            setLikeCount(prev => prev - 1);
+            // Remove from liked videos in localStorage
+            const likedVideos = JSON.parse(localStorage.getItem(`likedVideos_${currentUser.uid}`) || '[]');
+            const updatedLikedVideos = likedVideos.filter(video => video.id !== videoId);
+            localStorage.setItem(`likedVideos_${currentUser.uid}`, JSON.stringify(updatedLikedVideos));
+        }
+    };
+
+    const handleDislike = () => {
+        if (!currentUser) {
+            // Show notification to sign in
+            const notification = document.createElement('div');
+            notification.className = 'subscription-notification';
+            notification.textContent = 'Please sign in to dislike videos';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+            return;
+        }
+
+        if (isLiked) {
+            setIsLiked(false);
+            setLikeCount(prev => prev - 1);
+            
+            // Remove from liked videos in localStorage
+            const likedVideos = JSON.parse(localStorage.getItem(`likedVideos_${currentUser.uid}`) || '[]');
+            const updatedLikedVideos = likedVideos.filter(video => video.id !== videoId);
+            localStorage.setItem(`likedVideos_${currentUser.uid}`, JSON.stringify(updatedLikedVideos));
+        }
+        
+        setIsDisliked(!isDisliked);
     };    const handleSubscribe = () => {
         setIsSubscribed(!isSubscribed);
         const subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '[]');
@@ -94,6 +164,14 @@ const PlayVideo = ({videoId}) => {
     useEffect(() => {
         fetchVideoData();
         setIsLiked(false);
+        setIsDisliked(false);
+        
+        // Check if video is already liked
+        if (currentUser) {
+            const likedVideos = JSON.parse(localStorage.getItem(`likedVideos_${currentUser.uid}`) || '[]');
+            const isVideoLiked = likedVideos.some(video => video.id === videoId);
+            setIsLiked(isVideoLiked);
+        }
         
         // Check if already subscribed
         const subscriptions = JSON.parse(localStorage.getItem('subscriptions') || '[]');
@@ -129,6 +207,11 @@ const PlayVideo = ({videoId}) => {
         }
     };
 
+    const toggleChannelInfo = (e) => {
+        e.stopPropagation();
+        setShowChannelInfo(!showChannelInfo);
+    };
+
   return (
     <div className='play-video'>
         {/* <video src={video1} controls autoPlay muted></video> */}
@@ -154,7 +237,11 @@ const PlayVideo = ({videoId}) => {
                     <img src={like} alt="" />
                     {value_converter(likeCount)}
                 </button>
-                <button className="action-btn" aria-label="Dislike video">
+                <button 
+                    className={`action-btn ${isDisliked ? 'active' : ''}`} 
+                    onClick={handleDislike}
+                    aria-label="Dislike video"
+                >
                     <img src={dislike} alt="" />
                 </button>
                 <button className="action-btn" aria-label="Share video">
@@ -168,37 +255,55 @@ const PlayVideo = ({videoId}) => {
             </div>
         </div>
         <hr />
-        <div className="publisher">
-            {channelData?.snippet?.thumbnails?.default?.url ? (
-                <img 
-                    src={channelData.snippet.thumbnails.default.url} 
-                    alt="Channel" 
-                    onClick={handleChannelClick}
-                    style={{ cursor: 'pointer' }}
-                />
-            ) : (
-                <img 
-                    src={user_profile} 
-                    alt="Default Channel" 
-                    onClick={handleChannelClick}
-                    style={{ cursor: 'pointer' }}
-                />
-            )}
-            <div onClick={handleChannelClick} style={{ cursor: 'pointer' }}>
-                <p>{apiData?.snippet?.channelTitle || "Channel Name"}</p>
-                <span>{channelData ? value_converter(channelData.statistics?.subscriberCount) : 0} Subscribers</span>
+        {showChannelInfo ? (
+            <div className="publisher">
+                {channelData?.snippet?.thumbnails?.default?.url ? (
+                    <img 
+                        src={channelData.snippet.thumbnails.default.url} 
+                        alt="Channel" 
+                        onClick={handleChannelClick}
+                        style={{ cursor: 'pointer' }}
+                    />
+                ) : (
+                    <img 
+                        src={user_profile} 
+                        alt="Default Channel" 
+                        onClick={handleChannelClick}
+                        style={{ cursor: 'pointer' }}
+                    />
+                )}
+                <div onClick={handleChannelClick} style={{ cursor: 'pointer' }}>
+                    <p>{apiData?.snippet?.channelTitle || "Channel Name"}</p>
+                    <span>{channelData ? value_converter(channelData.statistics?.subscriberCount) : 0} Subscribers</span>
+                </div>
+                <div className="channel-actions">
+                    <button 
+                        className={`subscribe-btn ${isSubscribed ? 'subscribed' : ''}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleSubscribe();
+                        }}
+                    >
+                        {isSubscribed ? 'Subscribed' : 'Subscribe'}
+                    </button>
+                    <button 
+                        className="toggle-channel-btn"
+                        onClick={toggleChannelInfo}
+                    >
+                        Hide
+                    </button>
+                </div>
             </div>
-            <button 
-                className={`subscribe-btn ${isSubscribed ? 'subscribed' : ''}`}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    handleSubscribe();
-                    handleChannelClick();
-                }}
-            >
-                {isSubscribed ? 'Subscribed' : 'Subscribe'}
-            </button>
-        </div>
+        ) : (
+            <div className="publisher-collapsed">
+                <button 
+                    className="toggle-channel-btn"
+                    onClick={toggleChannelInfo}
+                >
+                    Show Channel Info
+                </button>
+            </div>
+        )}
         <div className="vid-description">
            <p>{apiData ? apiData.snippet.description.slice(0, 250) : "Description Here"}</p>            <hr />
             <div className="comment-section">

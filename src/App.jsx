@@ -6,6 +6,7 @@ import Video from './pages/Video/Video'
 import Channel from './Components/Channel/Channel'
 import Login from './Components/Auth/Login'
 import Profile from './pages/Profile/Profile'
+import Search from './pages/Search/Search' // Add this import
 import ProtectedRoute from './Components/Auth/ProtectedRoute'
 import { AuthProvider } from './contexts/AuthContext'
 
@@ -20,6 +21,7 @@ const App = () => {
           <Route path='/' element={<Home sidebar={sidebar} />} />
           <Route path='/video/:categoryId/:videoId' element={<Video />} />
           <Route path='/channel/:channelId' element={<Channel />} />
+          <Route path='/search' element={<Search />} /> {/* Add this route */}
           <Route path='/login' element={<Login />} />
           <Route path='/profile' element={
             <ProtectedRoute>

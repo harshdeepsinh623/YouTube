@@ -9,3 +9,11 @@
 .large-container{
     padding-left: 7%;
 }
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+    .container, .large-container {
+        padding-left: 2%;
+        padding-top: 70px; /* Add space for the category bar */
+    }
+}

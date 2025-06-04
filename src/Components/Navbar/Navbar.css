@@ -62,7 +62,7 @@ nav {
 .suggestion-item {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
+    padding: 12px 15px;
     cursor: pointer;
     transition: background-color 0.2s;
 }
@@ -72,11 +72,27 @@ nav {
 }
 
 .suggestion-thumbnail {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 12px;
     object-fit: cover;
+}
+
+.suggestion-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.suggestion-title {
+    font-size: 14px;
+    color: #0f0f0f;
+}
+
+.suggestion-type {
+    font-size: 12px;
+    color: #606060;
+    margin-top: 2px;
 }
 
 .suggestion-item span {
@@ -166,4 +182,350 @@ nav {
     .nav-right {
         gap: 15px;
     }
+}
+
+/* Add these styles to your Navbar.css file (replace existing dropdown styles if any) */
+
+.user-profile-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.user-icon {
+  cursor: pointer;
+}
+
+.user-profile {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-initial {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ff0000;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 300px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+  font-family: 'Roboto', Arial, sans-serif;
+  animation: dropdown-fade 0.2s ease-in-out;
+}
+
+@keyframes dropdown-fade {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-header {
+  padding: 16px;
+}
+
+.dropdown-user-info {
+  display: flex;
+  align-items: flex-start;
+}
+
+.dropdown-user-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 16px;
+  object-fit: cover;
+}
+
+.dropdown-user-initial {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ff0000;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  margin-right: 16px;
+}
+
+.dropdown-user-details {
+  flex: 1;
+}
+
+.dropdown-user-name {
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: #0f0f0f;
+}
+
+.dropdown-user-email {
+  color: #606060;
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.manage-account-link {
+  color: #065fd4;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.manage-account-link:hover {
+  text-decoration: underline;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #e5e5e5;
+  margin: 0;
+}
+
+.dropdown-section {
+  padding: 8px 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #0f0f0f;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f2f2f2;
+}
+
+.dropdown-item-icon {
+  margin-right: 16px;
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  display: inline-block;
+}
+
+/* Sign in button styling */
+.sign-in-btn {
+  background-color: #065fd4;
+  color: white;
+  border: 1px solid #065fd4;
+  padding: 8px 15px;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sign-in-btn:hover {
+  background-color: #0356c2;
+}
+
+.sign-in-btn, .sign-out-btn {
+    background-color: #cc0000;
+    color: black;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 2px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .sign-in-btn:hover, .sign-out-btn:hover {
+    background-color: #990000;
+  }
+  
+  .sign-out-btn {
+    background-color: transparent;
+    color: #606060;
+    border: 1px solid #ccc;
+  }
+  
+  .sign-out-btn:hover {
+    background-color: #f2f2f2;
+    color: #0f0f0f;
+  }
+
+/* Add these styles to your existing Navbar.css */
+
+/* Mobile search button (initially hidden on desktop) */
+.mobile-search-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.mobile-search-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Mobile search container */
+.mobile-search-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 10px 16px;
+  z-index: 1001;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+.mobile-search-box {
+  display: flex;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 8px 12px;
+  position: relative;
+}
+
+.mobile-search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+}
+
+.mobile-search-box button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.close-search-btn {
+  font-size: 18px;
+  color: #606060;
+  margin-left: 8px;
+}
+
+.mobile-suggestions {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  background: white;
+  z-index: 1000;
+  border-top: 1px solid #e5e5e5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nav-middle .search-box input {
+    width: 250px;
+  }
+  
+  .nav-left .logo {
+    width: 100px;
+  }
+  
+  .dropdown-menu {
+    width: 280px;
+  }
+}
+
+@media (max-width: 576px) {
+  .nav-middle {
+    display: none;
+  }
+  
+  .mobile-search-btn {
+    display: block;
+  }
+  
+  .nav-right {
+    gap: 12px;
+  }
+  
+  .nav-left .logo {
+    width: 90px;
+  }
+  
+  .dropdown-menu {
+    width: 260px;
+    right: -10px;
+  }
+  
+  .suggestion-item {
+    padding: 12px;
+  }
+  
+  .suggestion-thumbnail {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 400px) {
+  nav {
+    padding: 8px 10px;
+  }
+  
+  .nav-left .menu-button img {
+    width: 18px;
+  }
+  
+  .nav-left .logo {
+    width: 80px;
+  }
+  
+  .user-profile, .user-initial {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .sign-in-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .dropdown-menu {
+    width: 240px;
+  }
 }

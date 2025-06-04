@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import './Feed.css'
 import { Link } from 'react-router-dom'
-import { API_KEY, value_converter } from '../../data'
+// Update the import statement
+import { API_KEY, value_converter, fetchWithKeyRotation } from '../../data'
+import { mockVideos } from '../../mockData'
+
 import moment from 'moment/moment'
 
 const Feed = ({category}) => {
@@ -13,33 +16,23 @@ const Feed = ({category}) => {
     const observer = useRef()
     
     // Function to fetch data with pagination
+    // Then update the fetchData function
     const fetchData = async (pageToken = '') => {
         try {
             setLoading(true)
             const videoList_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=12&regionCode=US&videoCategoryId=${category}&pageToken=${pageToken}&key=${API_KEY}`;
-            const response = await fetch(videoList_url)
             
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`)
-            }
-            
-            const contentType = response.headers.get("content-type");
-            if (!contentType || !contentType.includes("application/json")) {
-                throw new TypeError("Received non-JSON response");
-            }
-            
-            const result = await response.json()
+            // Use the fetchWithKeyRotation function
+            const result = await fetchWithKeyRotation(videoList_url);
             
             if (result.items && result.items.length > 0) {
+                // Rest of your code remains the same
                 if (pageToken === '') {
-                    // If it's the first page, replace the data
                     setData(result.items)
                 } else {
-                    // If it's not the first page, append the data
                     setData(prevData => [...prevData, ...result.items])
                 }
                 
-                // Save the next page token if it exists
                 if (result.nextPageToken) {
                     setNextPageToken(result.nextPageToken)
                     setHasMore(true)

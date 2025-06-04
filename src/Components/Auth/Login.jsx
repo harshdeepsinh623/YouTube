@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { FaGoogle } from "react-icons/fa";
-import { FaFire } from 'react-icons/fa';
 import './Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignup, setIsSignup] = useState(false);
-  const { currentUser, error, signInWithGoogle } = useAuth();
+  const [errorMsg, setErrorMsg] = useState('');
+  const { currentUser, error, signInWithGoogle, signUp, signIn } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +24,29 @@ const Login = () => {
       navigate('/');
     } catch (error) {
       console.error('Google sign-in error:', error);
+      setErrorMsg('Failed to sign in with Google. Please try again.');
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg('');
+    
+    if (!email || !password) {
+      setErrorMsg('Please enter both email and password');
+      return;
+    }
+    
+    try {
+      if (isSignup) {
+        await signUp(email, password);
+      } else {
+        await signIn(email, password);
+      }
+      navigate('/');
+    } catch (error) {
+      console.error('Authentication error:', error);
+      setErrorMsg(error.message || 'Failed to authenticate. Please try again.');
     }
   };
 
@@ -34,7 +57,7 @@ const Login = () => {
           <img src="/src/assets/logo.png" alt="YouTube" className="login-logo" />
         </div>
         <h2>{isSignup ? 'Sign Up' : 'Sign In'}</h2>
-        {error && <p className="error">{error}</p>}
+        {(errorMsg || error) && <p className="error">{errorMsg || error}</p>}
         
         <button 
           className="google-signin-btn" 
@@ -48,7 +71,7 @@ const Login = () => {
           <span>or</span>
         </div>
         
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <input
               type="email"
